@@ -1,0 +1,33 @@
+# Etapa de construcción
+FROM maven:3.8.4-openjdk-17 AS builder
+
+WORKDIR /app
+
+# Copia solo el archivo pom.xml para descargar dependencias
+COPY pom.xml .
+
+# Descarga las dependencias
+RUN mvn dependency:go-offline
+
+# Copia el resto de los archivos
+COPY src ./src
+
+# Compila la aplicación
+RUN mvn clean package
+
+# Etapa de ejecución
+FROM openjdk:17-alpine
+
+WORKDIR /app
+
+# Instala las dependencias necesarias
+RUN apk add --no-cache msttcorefonts-installer fontconfig && update-ms-fonts
+
+# Copia el artefacto construido desde la etapa anterior
+COPY --from=builder /app/target/*.jar app.jar
+
+ENV TZ=America/Mexico_City
+
+#EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

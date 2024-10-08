@@ -1,0 +1,11 @@
+services:
+  backend:
+    build:
+      context: . # Ruta al backend
+      dockerfile: Dockerfile # Nombre del Dockerfile en el backend
+    container_name: rug_api
+    ports:
+      - "8080:8080" # Puerto expuesto para la API
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs # Montar un volumen para logs
