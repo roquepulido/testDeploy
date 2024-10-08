@@ -4,29 +4,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
+@RequestMapping(value = "api/v1")
 public class DemoController {
-    @Autowired
-    DemoRepository demoRepository;
+   
     @Autowired
     HttpServletRequest request;
 
-    @GetMapping("test/{id}")
-    public String getMethodName(@PathVariable int id) {
-        Optional<DemoEntity> dato = demoRepository.getEntidad(id);
-        if (dato.isPresent()) {
-            return dato.get().getDato();
-        }
-        return "Dato no Encontrado";
-    }
+  @GetMapping("/version")
+  public String getVersion(){
+    return "Version 1";
+  }
 
-    @GetMapping("get/ip")
+    @GetMapping("/ip")
     public String getMethodName() {
         String clientIp = request.getHeader("X-Forwarded-For");
         if (clientIp == null || clientIp.isEmpty()) {
